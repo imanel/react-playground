@@ -5,32 +5,44 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      txt: '',
-      cat: 0
+      red: 0,
+      green: 0,
+      blue: 0
     }
     this.update = this.update.bind(this)
   }
 
   update(event) {
-    this.setState({ txt: event.target.value })
+    this.setState({
+      red: ReactDOM.findDOMNode(this.refs.red).value,
+      green: ReactDOM.findDOMNode(this.refs.green).value,
+      blue: ReactDOM.findDOMNode(this.refs.blue).value
+    })
   }
 
   render() {
     return (
       <div>
-        <Widget txt={this.state.txt} update={this.update} />
+        <Slider ref="red" update={this.update} />
+        { this.state.red }
+        <br />
+        <Slider ref="green" update={this.update} />
+        { this.state.green }
+        <br />
+        <Slider ref="blue" update={this.update} />
+        { this.state.blue }
+        <br />
       </div>
     )
   }
 }
 
-const Widget = (props) => {
-  return (
-    <div>
-      <input type="text" onChange={props.update} />
-      <h1>{ props.txt }</h1>
-    </div>
-  )
+class Slider extends React.Component {
+  render() {
+    return (
+      <input ref="inp" type="range" min="0" max="255" onChange={this.props.update} />
+    )
+  }
 }
 
 ReactDOM.render(
