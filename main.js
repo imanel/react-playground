@@ -1,38 +1,25 @@
-import expect from 'expect'
+import { createStore } from 'redux'
 
 const counter = (state = 0, action) => {
   switch (action.type) {
     case 'INCREMENT':
-      return state + 1;
+      return state + 1
     case 'DECREMENT':
-      return state - 1;
+      return state - 1
     default:
-      return state;
+      return state
   }
 }
 
-expect(
-  counter(0, { type: 'INCREMENT' })
-).toEqual(1);
+const store = createStore(counter)
 
-expect(
-  counter(1, { type: 'INCREMENT' })
-).toEqual(2);
+const render = () => {
+  document.body.innerText = store.getState()
+}
 
-expect(
-  counter(2, { type: 'DECREMENT' })
-).toEqual(1);
+store.subscribe(render)
+render()
 
-expect(
-  counter(1, { type: 'DECREMENT' })
-).toEqual(0);
-
-expect(
-  counter(1, { type: 'UNKNOWN' })
-).toEqual(1);
-
-expect(
-  counter(undefined, {})
-).toEqual(0);
-
-console.log('Tests passed');
+document.addEventListener('click', () => {
+  store.dispatch({ type: 'INCREMENT' })
+})
