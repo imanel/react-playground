@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { combineReducers, createStore } from 'redux'
+import { Provider } from 'react-redux'
 import expect from 'expect'
 import deepFreeze from 'deep-freeze'
 
@@ -222,21 +223,6 @@ const TodoApp = () => (
     <Footer />
   </div>
 )
-
-class Provider extends React.Component {
-  getChildContext() {
-    return {
-      store: this.props.store
-    }
-  }
-
-  render() {
-    return this.props.children
-  }
-}
-Provider.childContextTypes = {
-  store: React.PropTypes.object
-}
 
 ReactDOM.render(
   <Provider store={createStore(todoApp)}>
