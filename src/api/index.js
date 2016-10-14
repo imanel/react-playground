@@ -10,7 +10,7 @@ const fakeDatabase = {
   }, {
     id: Math.random(),
     text: 'let`s go',
-    completed: true,
+    completed: false,
   }]
 }
 
