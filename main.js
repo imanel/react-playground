@@ -54,6 +54,29 @@ const todoApp = combineReducers({
   visibilityFilter
 })
 
+let nextTodoId = 0
+const addTodo = (text) => {
+  return {
+    type: 'ADD_TODO',
+    text: text,
+    id: nextTodoId++
+  }
+}
+
+const setVisibilityFilter = (filter) => {
+  return {
+    type: 'SET_VISIBILITY_FILTER',
+    filter: filter
+  }
+}
+
+const toggleTodo = (id) => {
+  return {
+    type: 'TOGGLE_TODO',
+    id
+  }
+}
+
 const Link = ({ active, children, onClick }) => {
   if (active) {
     return <span>{children}</span>
@@ -79,10 +102,7 @@ const mapStateToLinkProps = (state, ownProps) => {
 const mapDispatchLinkProps = (dispatch, ownProps) => {
   return {
     onClick: () => {
-      dispatch({
-        type: 'SET_VISIBILITY_FILTER',
-        filter: ownProps.filter
-      })
+      dispatch(setVisibilityFilter(ownProps.filter))
     }
   }
 }
@@ -126,10 +146,7 @@ const mapStateToTodoListProps = (state) => {
 const mapDispatchToTodoListProps = (dispatch) => {
   return {
     onTodoClick: (id) => {
-      dispatch({
-        type: 'TOGGLE_TODO',
-        id
-      })
+      dispatch(toggleTodo(id))
     }
   }
 }
@@ -139,7 +156,6 @@ const VisibleTodoList = connect(
   mapDispatchToTodoListProps
 )(TodoList)
 
-let nextTodoId = 0
 let AddTodo = ({ dispatch }) => {
   let input
 
@@ -149,11 +165,7 @@ let AddTodo = ({ dispatch }) => {
         input = node
       }} />
       <button onClick={() => {
-        dispatch({
-          type: 'ADD_TODO',
-          text: input.value,
-          id: nextTodoId++
-        })
+        dispatch(addTodo(input.value))
         input.value = ''
       }}>
         Add Todo
