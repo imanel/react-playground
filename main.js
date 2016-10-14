@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { combineReducers, createStore } from 'redux'
-import { Provider } from 'react-redux'
+import { connect, Provider } from 'react-redux'
 import expect from 'expect'
 import deepFreeze from 'deep-freeze'
 
@@ -116,45 +116,6 @@ const Todo = ({ onClick, completed, text }) => (
   </li>
 )
 
-class VisibleTodoList extends React.Component {
-  componentDidMount() {
-    const { store } = this.context
-    this.unsubscribe = store.subscribe(() =>
-      this.forceUpdate()
-    )
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-
-  render() {
-    const props = this.props
-    const { store } = this.context
-    const state = store.getState()
-
-    return (
-      <TodoList
-        todos={
-          getVisibleTodos(
-            state.todos,
-            state.visibilityFilter
-          )
-        }
-        onTodoClick={id =>
-          store.dispatch({
-            type: 'TOGGLE_TODO',
-            id
-          })
-        }
-      />
-    )
-  }
-}
-VisibleTodoList.contextTypes = {
-  store: React.PropTypes.object
-}
-
 const TodoList = ({ todos, onTodoClick }) => (
   <ul>
     {todos.map(todo =>
@@ -166,6 +127,31 @@ const TodoList = ({ todos, onTodoClick }) => (
     )}
   </ul>
 )
+
+const mapStateToProps = (state) => {
+  return {
+    todos: getVisibleTodos(
+      state.todos,
+      state.visibilityFilter
+    )
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTodoClick: (id) => {
+      dispatch({
+        type: 'TOGGLE_TODO',
+        id
+      })
+    }
+  }
+}
+
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList)
 
 const AddTodo = (props, { store }) => {
   let input
