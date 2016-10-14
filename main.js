@@ -4,6 +4,7 @@ import { combineReducers, createStore } from 'redux'
 import { connect, Provider } from 'react-redux'
 import expect from 'expect'
 import deepFreeze from 'deep-freeze'
+import { loadState, saveState } from './localStorage'
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -54,11 +55,10 @@ const todoApp = combineReducers({
   visibilityFilter
 })
 
-let nextTodoId = 0
 const addTodo = (text) => ({
   type: 'ADD_TODO',
   text: text,
-  id: nextTodoId++,
+  id: Math.random(),
 })
 
 const setVisibilityFilter = (filter) => ({
@@ -192,14 +192,14 @@ const TodoApp = () => (
   </div>
 )
 
-const persistedState = {
-  todos: [{
-    id: 0,
-    text: 'Welcome back!',
-    completed: false,
-  }],
-}
+const persistedState = loadState()
 const store = createStore(todoApp, persistedState)
+
+store.subscribe(() => {
+  saveState({
+    todos: store.getState().todos,
+  })
+})
 
 ReactDOM.render(
   <Provider store={store}>
